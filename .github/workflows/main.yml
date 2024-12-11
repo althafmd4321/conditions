@@ -1,0 +1,32 @@
+name: Conditional Execution Example
+ 
+on:
+  push:
+    branches:
+      - main
+      - feature/*
+ 
+jobs:
+  conditional-job:
+    runs-on: ubuntu-latest
+   
+    steps:
+    # Run this step only on the `main` branch
+    - name: Run on main branch
+      if: github.ref == 'refs/heads/main'
+      run: echo "This step runs only on the main branch!"
+ 
+    # Check out the code (this always runs)
+    - name: Checkout code
+      uses: actions/checkout@v3
+ 
+    # Run a step only if the previous one succeeded
+    - name: Run on success
+      if: ${{ success() }}
+      run: echo "Previous step was successful!"
+   
+    # Run a step only if the previous one failed
+    - name: Run on failure
+      if: ${{ failure() }}
+      run: echo "Previous step failed!"
+ 
